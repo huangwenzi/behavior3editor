@@ -41,7 +41,7 @@ interface NodeDef {
 ## 编译与构建
 ```shell
 npm install # 安装依赖
-npm start # 运行测试
+npm run dev # 运行测试
 npm run build # 编译可执行文件
 ```
 

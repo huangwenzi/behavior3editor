@@ -2,8 +2,8 @@ type Status = "success" | "failure" | "running";
 
 type Constructor<T = unknown> = new (...args: unknown[]) => T;
 
-interface TreeEnv {}
-interface Node {}
+interface TreeEnv { }
+interface Node { }
 
 interface NodeDef {
   name: string;
@@ -15,18 +15,18 @@ interface NodeDef {
   args?: {
     name: string;
     type:
-      | "boolean"
-      | "boolean?"
-      | "int"
-      | "int?"
-      | "float"
-      | "float?"
-      | "enum"
-      | "enum?"
-      | "string"
-      | "string?"
-      | "code"
-      | "code?";
+    | "boolean"
+    | "boolean?"
+    | "int"
+    | "int?"
+    | "float"
+    | "float?"
+    | "enum"
+    | "enum?"
+    | "string"
+    | "string?"
+    | "code"
+    | "code?";
     desc: string;
     options?: { name: string; value: unknown }[];
   }[];
@@ -35,7 +35,7 @@ interface NodeDef {
 }
 
 abstract class Process {
-  init(node: Node): void {}
+  init(node: Node): void { }
 
   run(node: Node, env: TreeEnv): Status {
     return "success";
@@ -64,6 +64,36 @@ namespace zh {
           type: "Action",
           desc: "打印日志",
           args: [{ name: "message", type: "string", desc: "日志" }],
+        };
+      }
+    }
+
+    export class Refresh extends Process {
+      override get descriptor(): NodeDef {
+        return {
+          name: "Refresh",
+          type: "Action",
+          desc: "刷新",
+        };
+      }
+    }
+
+    export class Upgrade extends Process {
+      override get descriptor(): NodeDef {
+        return {
+          name: "Upgrade",
+          type: "Action",
+          desc: "升级",
+        };
+      }
+    }
+
+    export class Purchase extends Process {
+      override get descriptor(): NodeDef {
+        return {
+          name: "Purchase",
+          type: "Action",
+          desc: "购买",
         };
       }
     }
@@ -170,7 +200,9 @@ namespace zh {
           name: "Check",
           type: "Condition",
           desc: "检查True或False",
-          args: [{ name: "value", type: "code", desc: "值" }],
+          args: [
+            { name: "value", type: "code", desc: "值" },
+          ],
           doc: `
             + 做简单数值公式判定，返回「成功」或「失败」`,
         };
@@ -305,6 +337,9 @@ export const zhNodeDef = () => {
     zh.action.Log,
     zh.action.Now,
     zh.action.Wait,
+    zh.action.Refresh,
+    zh.action.Upgrade,
+    zh.action.Purchase,
     zh.composite.Foreach,
     zh.composite.Loop,
     zh.composite.Parallel,

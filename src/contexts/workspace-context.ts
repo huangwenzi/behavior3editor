@@ -11,6 +11,7 @@ import React from "react";
 import { create } from "zustand";
 import { useSetting } from "./setting-context";
 import { ipcRenderer } from "electron";
+import json2Erlang from "./json2Erlang";
 
 let buildDir: string | undefined;
 
@@ -111,6 +112,7 @@ export type WorkspaceStore = {
   openProject: (project?: string) => void;
   batchProject: () => void;
   buildProject: () => void;
+  exportProject: () => void;
 
   workdir: string;
   path: string;
@@ -330,6 +332,38 @@ export const useWorkspace = create<WorkspaceStore>((set, get) => ({
     }
   },
 
+  exportProject: () => {
+    const workspace = get();
+    try {
+      let hasError = false;
+      workspace.allFiles.forEach((file) => {
+        const treeStr = fs.readFileSync(file.path, "utf8");
+        let treeModel: TreeModel | undefined = JSON.parse(treeStr);
+        console.log('export file path:', file.path)
+        const exportPath = file.path.replace('.json', '.erl')
+        console.log("export:", exportPath);
+        if (!b3util.checkNodeData(treeModel?.root)) {
+          hasError = true;
+        }
+        // 转化成 erlang格式
+        let erl = json2Erlang(treeModel!)
+        console.log('erl export:')
+        console.log(erl)
+        fs.mkdirSync(Path.dirname(exportPath), { recursive: true });
+        // fs.writeFileSync(buildpath, JSON.stringify(treeModel, null, 2));
+        fs.writeFileSync(exportPath, erl);
+      });
+      if (hasError) {
+        message.error(i18n.t("exportFailed"));
+      } else {
+        message.success(i18n.t("exportCompleted"));
+      }
+    } catch (error) {
+      console.error(error);
+      message.error(i18n.t("exportFailed"));
+    }
+  },
+
   loadWorkspace: () => {
     const workspace = get();
     const data = readJson(workspace.path) as WorkspaceModel;
@@ -446,7 +480,7 @@ export const useWorkspace = create<WorkspaceStore>((set, get) => ({
     saveFile(workspace.editing);
   },
 
-  saveAs: () => {},
+  saveAs: () => { },
 
   saveAll: () => {
     const workspace = get();

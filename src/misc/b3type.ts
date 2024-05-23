@@ -30,6 +30,7 @@ export interface NodeDef {
 export interface NodeModel {
   id: number;
   name: string;
+  parent?:NodeModel,
   desc?: string;
   args?: { [key: string]: any };
   input?: string[];

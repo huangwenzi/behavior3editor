@@ -43,6 +43,7 @@ export const Menu: FC<LayoutProps> = () => {
   const workspace = {
     batchProject: useWorkspace((state) => state.batchProject),
     buildProject: useWorkspace((state) => state.buildProject),
+    exportProject: useWorkspace((state) => state.exportProject),
     createProject: useWorkspace((state) => state.createProject),
     editing: useWorkspace((state) => state.editing),
     init: useWorkspace((state) => state.init),
@@ -69,22 +70,22 @@ export const Menu: FC<LayoutProps> = () => {
       // { role: 'appMenu' }
       ...(isMacos
         ? [
-            {
-              id: "menu.app",
-              label: app.name,
-              submenu: [
-                { label: t("about"), role: "about" },
-                { type: "separator" },
-                { label: t("services"), role: "services" },
-                { type: "separator" },
-                { label: t("hide"), role: "hide" },
-                { label: t("hideOthers"), role: "hideOthers" },
-                { label: t("unhide"), role: "unhide" },
-                { type: "separator" },
-                { label: t("quit"), role: "quit" },
-              ],
-            },
-          ]
+          {
+            id: "menu.app",
+            label: app.name,
+            submenu: [
+              { label: t("about"), role: "about" },
+              { type: "separator" },
+              { label: t("services"), role: "services" },
+              { type: "separator" },
+              { label: t("hide"), role: "hide" },
+              { label: t("hideOthers"), role: "hideOthers" },
+              { label: t("unhide"), role: "unhide" },
+              { type: "separator" },
+              { label: t("quit"), role: "quit" },
+            ],
+          },
+        ]
         : []),
       {
         id: "menu.file",
@@ -165,6 +166,12 @@ export const Menu: FC<LayoutProps> = () => {
             label: t("batch"),
             enabled: enabled,
             click: () => workspace.batchProject(),
+          },
+          {
+            id: "menu.file.export",
+            label: t("export"),
+            enabled: enabled,
+            click: () => workspace.exportProject(),
           },
         ],
       },
